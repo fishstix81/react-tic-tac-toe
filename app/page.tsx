@@ -1,95 +1,65 @@
-import Image from "next/image";
+"use client";
+
+import React from "react";
+
+import Board from "./componets/Board";
+import Cell from "./componets/Cell";
+import Row from "./componets/Row";
+import { calculateWinner } from "./helpers/calculateWinner";
+
 import styles from "./page.module.css";
 
 export default function Home() {
+  const [squares, setSquares] = React.useState<Array<string | null>>(
+    Array(9).fill(null),
+  );
+  const [currentMove, setCurrentMove] = React.useState<number>(0);
+  const whoIsWinner = calculateWinner(squares);
+  if (whoIsWinner) {
+    alert(whoIsWinner);
+  }
+
+  const handleClick = (sel: number) => {
+    if (whoIsWinner) {
+      return;
+    }
+
+    const isSelected = squares[sel] !== null;
+    if (isSelected) {
+      return;
+    }
+
+    const nextSquares = squares.slice();
+    const isXTurn = currentMove % 2 === 0;
+    const turn = isXTurn ? "X" : "O";
+    nextSquares[sel] = turn;
+    setCurrentMove(currentMove + 1);
+    setSquares(nextSquares);
+  };
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
+        <h1>Tic Tac Toe</h1>
+        <Board>
+          <Row>
+            <Cell squareVal={squares[0]} onCellClick={() => handleClick(0)} />
+            <Cell squareVal={squares[1]} onCellClick={() => handleClick(1)} />
+            <Cell squareVal={squares[2]} onCellClick={() => handleClick(2)} />
+          </Row>
+          <Row>
+            <Cell squareVal={squares[3]} onCellClick={() => handleClick(3)} />
+            <Cell squareVal={squares[4]} onCellClick={() => handleClick(4)} />
+            <Cell squareVal={squares[5]} onCellClick={() => handleClick(5)} />
+          </Row>
+          <Row>
+            <Cell squareVal={squares[6]} onCellClick={() => handleClick(6)} />
+            <Cell squareVal={squares[7]} onCellClick={() => handleClick(7)} />
+            <Cell squareVal={squares[8]} onCellClick={() => handleClick(8)} />
+          </Row>
+        </Board>
       </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      <footer className={styles.footer}></footer>
     </div>
   );
 }
